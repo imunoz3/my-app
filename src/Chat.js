@@ -1,45 +1,38 @@
 import React, { Component } from 'react'
 import ChatInput from './ChatInput'
-import ChatMessage from './ChatMessage'
 
-import socketIOClient from "socket.io-client";
-const URL = 'wss://tarea-3-websocket.2021-1.tallerdeintegracion.cl/flights'
+import io from "socket.io-client";
 
 class Chat extends Component {
   state = {
     name: 'Bob',
-    messages: [],
+    chat: [],
   }
 
-  ws = socketIOClient(URL);
+  ws = io('wss://tarea-3-websocket.2021-1.tallerdeintegracion.cl', {path: "/flights"});
 
   componentDidMount() {
-    this.ws.onopen = () => {
-      // on connecting, do nothing but log it to the console
-      console.log('connected')
-    }
-
-    this.ws.on("CHAT", (evt) => {
-      const message = JSON.parse(evt.data)
-      this.addMessage(message)
+    this.ws.on("CHAT", (data) => {
+      data.date = new Date(data.date).toLocaleDateString('en-GB')
+      this.setState({
+        chat: [...this.state.chat, data]
+      });
     });
 
-    this.ws.onclose = () => {
-      console.log('disconnected')
-      // automatically try to reconnect on connection loss
-      this.setState({
-        ws: socketIOClient(URL),
-      })
-    }
   }
-  addMessage = message =>
-    this.setState(state => ({ messages: [message, ...state.messages] }))
-
   submitMessage = messageString => {
     // on submitting the ChatInput form, send the message, add it to the list and reset the input
-    const message = { name: this.state.name, message: messageString }
-    this.ws.emit("CHAT", JSON.stringify(message))
-    this.addMessage(message)
+    this.ws.emit("CHAT", { name: this.state.name, message: messageString })
+  }
+
+  renderChat() {
+    const { chat } = this.state;
+    return chat.map((data, idx) => (
+      <div key={idx}>
+        <span style={{ color: "green" }}>{data.name}:{data.date} </span>
+        <span>{data.message}</span>
+      </div>
+    ));
   }
 
   render() {
@@ -56,17 +49,9 @@ class Chat extends Component {
           />
         </label>
         <ChatInput
-          ws={this.ws}
           onSubmitMessage={messageString => this.submitMessage(messageString)}
         />
-        {this.state.messages.map((message, index) =>
-          <ChatMessage
-            key={index}
-            message={message.message}
-            name={message.name}
-            date={message.date}
-          />,
-        )}
+        <div>{this.renderChat()}</div>
       </div>
     )
   }
