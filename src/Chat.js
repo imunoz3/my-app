@@ -29,7 +29,7 @@ class Chat extends Component {
     const { chat } = this.state;
     return chat.map((data, idx) => (
       <div key={idx}>
-        <span style={{ color: "green" }}>{data.name}:{data.date} </span>
+        <span style={{ color: "green" }}>{data.name} ({data.date}): </span>
         <span>{data.message}</span>
       </div>
     ));
