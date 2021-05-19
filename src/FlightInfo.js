@@ -31,7 +31,7 @@ class FlightInfo extends Component {
     const {response} = this.state;
     return (
     <div>
-      <button onClick ={this.emitFlights()}> Show Flights </button>
+      <button onClick={() => this.emitFlights()}> Show Flights </button>
       <div>
       {this.state.flights.map(flight => (
         <p>
@@ -41,6 +41,12 @@ class FlightInfo extends Component {
           </div>
           <div>
             Avión: {flight.plane} 
+          </div>
+          <div>
+            Origen: {flight.origin} 
+          </div>
+          <div>
+            Destino: {flight.destination} 
           </div>
           <div>
             Asientos: {flight.seats} 

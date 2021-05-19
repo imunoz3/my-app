@@ -52,7 +52,6 @@ class Mapa extends Component {
   }
 
   emitFlights () {
-    // on submitting the ChatInput form, send the message, add it to the list and reset the input
     this.ws.emit("FLIGHTS", {})
   }
 
@@ -60,8 +59,7 @@ class Mapa extends Component {
     const {response} = this.state;
     return (
     <div>
-      <p>Los markers azules son orígenes, los círculos azules son destinos y los patitos son aviones en movimiento.</p>
-      <button onClick ={this.emitFlights()}> Show Flights </button>
+      {this.emitFlights()}
       <div>
         <MapContainer center={[45.4, -75.7]} zoom={1.5}>
         <TileLayer
@@ -70,11 +68,9 @@ class Mapa extends Component {
         />
       {this.state.flights.map(flight => (
         <div>
-        <Marker position={[flight.origin[0], flight.origin[1]]}> 
-         <Popup>Origen:{flight.code}</Popup>
-        </Marker>
+        <CircleMarker center={[flight.origin[0], flight.origin[1]]}> 
+        </CircleMarker>
         <CircleMarker center={[flight.destination[0], flight.destination[1]]}> 
-        <Popup>Destino:{flight.code}</Popup>
         </CircleMarker>
         <Polyline pathOptions={limeOptions} positions={[[flight.origin[0], flight.origin[1]], [flight.destination[0], flight.destination[1]]]} />
         </div>
