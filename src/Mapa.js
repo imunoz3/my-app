@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { MapContainer, TileLayer, Marker, Popup, Polyline, CircleMarker} from 'react-leaflet'
 import PropTypes from 'prop-types'
-import L from 'leaflet';
+import L, { Circle } from 'leaflet';
 
 import io from "socket.io-client";
 const limeOptions = { color: 'lime' }
@@ -33,21 +33,21 @@ class Mapa extends Component {
     });
 
     this.ws.on("POSITION", (data) => {
-      const elementsIndex = this.state.positions.findIndex(element => element.code == data.code )
-      if (elementsIndex == -1)
-      {
-        this.setState({
-          positions: [...this.state.positions, data]
-          });
-      }
-      else
-      {
-        let newArray = [...this.state.positions]
-        newArray[elementsIndex] = {...newArray[elementsIndex], position: data.position}
-        this.setState({
-          positions: newArray,
-          });
-      }
+      //const elementsIndex = this.state.positions.findIndex(element => element.code == data.code )
+      //if (elementsIndex == -1)
+      //{
+      this.setState({
+        positions: [...this.state.positions, data]
+        });
+      //}
+      //else
+      //{
+      //let newArray = [...this.state.positions]
+        //newArray[elementsIndex] = {...newArray[elementsIndex], position: data.position}
+        //this.setState({
+          //positions: newArray,
+          //});
+      //}
     });
   }
 
@@ -68,18 +68,18 @@ class Mapa extends Component {
         />
       {this.state.flights.map(flight => (
         <div>
-        <CircleMarker center={[flight.origin[0], flight.origin[1]]}> 
-        </CircleMarker>
-        <CircleMarker center={[flight.destination[0], flight.destination[1]]}> 
-        </CircleMarker>
+        <Marker position={[flight.origin[0], flight.origin[1]]}> 
+        </Marker>
+        <Marker position={[flight.destination[0], flight.destination[1]]}> 
+        </Marker>
         <Polyline pathOptions={limeOptions} positions={[[flight.origin[0], flight.origin[1]], [flight.destination[0], flight.destination[1]]]} />
         </div>
       ))}
       {this.state.positions.map(plane => (
         <div>
-        <Marker position={[plane.position[0], plane.position[1]]} icon={duckIcon}> 
-        <Popup>Avión:{plane.code}</Popup>
-        </Marker>
+        <CircleMarker center={[plane.position[0], plane.position[1]]}> 
+        <Popup>Avión:{plane.code}, Posición: {plane.position[0]}, {plane.position[1]}</Popup>
+        </CircleMarker>
         </div>
       ))}
 
