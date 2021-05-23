@@ -78,7 +78,7 @@ class Mapa extends Component {
       {this.state.positions.map(plane => (
         <div>
         <CircleMarker center={[plane.position[0], plane.position[1]]}> 
-        <Popup>Avión:{plane.code}, Posición: {plane.position[0]}, {plane.position[1]}</Popup>
+        <Popup>Avión:{plane.code}</Popup>
         </CircleMarker>
         </div>
       ))}
